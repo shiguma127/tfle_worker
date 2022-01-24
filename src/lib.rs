@@ -22,7 +22,7 @@ pub async fn main(req: Request, env: Env) -> Result<Response> {
     utils::set_panic_hook();
     let router = Router::new();
     router
-        .get("/", |req, _| {
+        .get("/", |req, ctx| {
             let query_pairs: HashMap<_, _> = req.url()?.query_pairs().into_owned().collect();
             let user_answer = match query_pairs.get("answer") {
                 Some(answer) => answer,
@@ -39,10 +39,8 @@ pub async fn main(req: Request, env: Env) -> Result<Response> {
             let answer = bit & 0x00000001 > 0;
             let res = answer == user_answer;
             let mut response  = Response::from_json(&res).unwrap();
-            response.headers_mut().append("Access-Control-Allow-Origin", "http://localhost:3000")?;
+            response.headers_mut().append("Access-Control-Allow-Origin", ctx.var("CLIENT_ORIGIN").unwrap().to_string().as_str())?;
             response.headers_mut().append("Access-Control-Allow-Methods","GET")?;
-            response.headers_mut()
-        .append("access-control-allow-methods","GET")?;
             Ok(response)
         })
         .run(req, env)

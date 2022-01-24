@@ -2,9 +2,10 @@ name = "tfle-worker"
 type = "javascript"
 workers_dev = true
 compatibility_date = "2022-01-22"
+vars = { CLIENT_ORIGIN = "https://tf-le.vercel.app"}
 
-[vars]
-WORKERS_RS_VERSION = "0.0.7"
+[env.dev]
+vars = { CLIENT_ORIGIN = "http://localhost:3000" }
 
 [build]
 command = "cargo install -q worker-build && worker-build --release" # required
