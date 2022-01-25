@@ -35,8 +35,7 @@ pub async fn main(req: Request, env: Env) -> Result<Response> {
             let utc_date: chrono::Date<Utc> = Utc::today();
             let hash = digest(format!{"{}",utc_date});
             let bytes = hash.as_bytes();
-            let bit = bytes[0] >> 7;
-            let answer = bit & 0x00000001 > 0;
+            let answer = bytes[0] & 0x00000001 > 0;
             let res = answer == user_answer;
             let mut response  = Response::from_json(&res).unwrap();
             response.headers_mut().append("Access-Control-Allow-Origin", ctx.var("CLIENT_ORIGIN").unwrap().to_string().as_str())?;
